@@ -34,4 +34,4 @@ Route::resource('ventas', VentasController::class);
 Route::resource('compradores', CompradoresController::class);
 Route::resource('vendedores', VendedoresController::class);
 Route::resource('balsas', BalsasController::class);
-Route::get('/ventas/{id}/xml', [VentasController::class, 'xml']);
+Route::get('/ventas/{id}/xml', [VentasController::class, 'generarXml']);

@@ -36,8 +36,17 @@ class VentasController extends Controller
     }*/
     public function store(Request $request)
     {
-        // TEMPORAL para que no falle
-        return back()->with('success', 'Guardado (temporal)');
+        $venta = Venta::create([
+            'num_envio' => $request->num_envio,
+            'num_identificacion_establec' => $request->num_identificacion_establec,
+            'fecha' => $request->fecha,
+        ]);
+
+        foreach ($request->lineas as $linea) {
+            $venta->lineas()->create($linea);
+        }
+
+        return redirect()->route('ventas.index');
     }
 
     /**
@@ -78,57 +87,35 @@ class VentasController extends Controller
         return redirect()->route('ventas.index');
     }
 
-    public function xml($id)
+    public function generarXml($id, XmlService $xmlService)
     {
+        $venta = Venta::with(['lineas.especie', 'lineas.vendedor', 'lineas.comprador'])
+            ->findOrFail($id);
 
-        $venta = Venta::with(
-            'lineas.especie',
-            'lineas.vendedor',
-            'lineas.comprador'
-        )->find($id);
+        $resultado = $xmlService->generarXmlVenta($venta);
 
-        // 🔥 CONTROL ERRORES
-        if (!$venta) {
-            return "❌ No existe la venta con ID $id";
+        // Si solo hay 1 XML → descarga directa
+        if (count($resultado) === 1) {
+            return Storage::download($resultado[0]['ruta']);
         }
 
-        if ($venta->lineas->isEmpty()) {
-            return "❌ La venta no tiene líneas";
+        // Si hay varios → ZIP
+        $zipName = "venta_{$venta->id}.zip";
+        $zipPath = storage_path("app/xml/$zipName");
+
+        $zip = new \ZipArchive;
+        $zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE);
+
+        foreach ($resultado as $xml) {
+            $zip->addFile(storage_path("app/".$xml['ruta']), basename($xml['ruta']));
         }
 
-        // 🔥 GENERAR XML
-        $xmls = \App\Services\XmlService::generar($venta);
+        $zip->close();
 
-        foreach ($xmls as $establecimiento => $xmlString) {
-
-            $dom = new \DOMDocument();
-            $dom->loadXML($xmlString);
-
-            libxml_use_internal_errors(true);
-
-            if (!$dom->schemaValidate(storage_path('app/xsd/Esquema_WS_Envio_DocVenta_Andalucia.xsd'))) {
-
-                $errors = libxml_get_errors();
-
-                foreach ($errors as $error) {
-                    echo $error->message . "<br>";
-                }
-
-                libxml_clear_errors();
-
-                return "❌ XML inválido";
-            }
-
-            $nombre = "NV_01_" .
-                substr(preg_replace('/\D/', '', $establecimiento), -6) . "_" .
-                date('Ymd_His') . ".xml";
-
-            \Storage::put("xml/$nombre", $xmlString);
-        }
-
-        return "✅ XML generados correctamente";
-
+        return response()->download($zipPath)->deleteFileAfterSend(true);
     }
 }
+
+
 
 

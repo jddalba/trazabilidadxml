@@ -8,10 +8,19 @@
         <form method="POST" action="{{ route('especies.store') }}">
             @csrf
 
-            <div style="margin-bottom:15px">
-                <label>Código</label>
-                <br>
-                <input type="text" name="codigo" maxlength="2">
+            <div class="mb-3">
+                <label for="codigo" class="form-label">Código</label>
+                <input
+                    type="text"
+                    name="codigo"
+                    id="codigo"
+                    class="form-control"
+                    value="{{ old('codigo') }}"
+                    required
+                >
+                @error('codigo')
+                <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
 
             <div style="margin-bottom:15px">

@@ -43,7 +43,7 @@
             </tr>
 
         @endforeach
-
+        <a href="{{ url('ventas/'.$v->id.'/xml') }}">XML</a>
     </table>
 
 @endsection

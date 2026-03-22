@@ -2,116 +2,140 @@
 
 namespace App\Services;
 
-use App\Models\Venta;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use DOMDocument;
 
 class XmlService
 {
-
-    public static function generar($venta)
+    public function generarXmlVenta($venta)
     {
-
-        // 🔥 1. Agrupar por establecimiento
-        $porEstablecimiento = $venta->lineas->groupBy(function ($l) use ($venta) {
-            return $venta->num_identificacion_establec;
-        });
-
-        $xmls = [];
-
-        foreach ($porEstablecimiento as $establecimiento => $lineasEst) {
-
-            // 🔥 XML base
-            $xml = new \SimpleXMLElement(
-                '<?xml version="1.0" encoding="UTF-8"?>
-                <Envio xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>'
-            );
-
-            $xml->addAttribute('NumEnvio', $venta->num_envio);
-
-            $estVentas = $xml->addChild('EstablecimientosVenta');
-            $est = $estVentas->addChild('EstablecimientoVenta');
-            $est->addAttribute('NumIdentificacionEstablec', $establecimiento);
-
-            $ventas = $est->addChild('Ventas');
-
-            // 🔥 2. Agrupar por REGA (unidad productiva)
-            $porRega = $lineasEst->groupBy(function ($l) {
-                return $l->especie->codigo_rega ?? 'SIN_REGA';
-            });
-
-            foreach ($porRega as $rega => $lineasRega) {
-
-                $unidad = $ventas->addChild('VentasUnidadProductiva');
-
-                // 🔥 Datos unidad productiva
-                $datos = $unidad->addChild('DatosUnidadProductiva');
-                $granja = $datos->addChild('Granja');
-
-                $granja->addChild('MetodoProduccion', $lineasRega->first()->especie->metodo_produccion);
-                $granja->addChild('CodigoREGA', $rega);
-                $granja->addChild('FechaProduccion', date('Y-m-d\TH:i:s'));
-
-                $especies = $unidad->addChild('Especies');
-
-                foreach ($lineasRega as $i => $linea) {
-
-                    $esp = $especies->addChild('Especie');
-
-                    // 🔥 NumDocVenta REAL
-                    $esp->addAttribute('NumDocVenta',
-                        self::generarCodigoDocumento($venta, $establecimiento, $i)
-                    );
-
-                    // 🔥 DATOS ESPECIE
-                    $esp->addChild('EspecieAL3', $linea->especie->especie_al3);
-                    $esp->addChild('EspecieComercial', $linea->especie->especie_comercial);
-                    $esp->addChild('EspecieCientifico', $linea->especie->especie_cientifica);
-
-                    // 🔥 PAÍS
-                    $esp->addChild('PaisAL3', $linea->especie->pais_al3);
-
-                    // 🔥 CONSERVACIÓN / PRESENTACIÓN
-                    $esp->addChild('CodEspecieConservacion', $linea->especie->cod_conservacion);
-                    $esp->addChild('CodEspeciePresentacion', $linea->especie->cod_presentacion);
-
-                    // 🔥 NULL CONTROL (IMPORTANTE)
-                    $esp->addChild('CodEspecieFrescura', $linea->especie->cod_frescura ?? '');
-                    $esp->addChild('CodEspecieCalibre', $linea->especie->cod_calibre ?? '');
-
-                    // 🔥 FECHA
-                    $esp->addChild('FechaVenta', date('Y-m-d\TH:i:s', strtotime($linea->fecha_venta)));
-
-                    $esp->addChild('Lote', $linea->lote);
-
-                    // 🔥 VENDEDOR
-                    //$esp->addChild('TipoCifNifVendedor', $linea->vendedor->tipo_documento);
-                    $esp->addChild('TipoCifNifVendedor', $linea->vendedor->tipo_documento ?? '2');
-                    $esp->addChild('NIFVendedor', $linea->vendedor->nif);
-                    $esp->addChild('NombreVendedor', $linea->vendedor->nombre);
-                    $esp->addChild('DireccionVendedor', $linea->vendedor->direccion);
-
-                    // 🔥 COMPRADOR
-                    $esp->addChild('NIFComprador', $linea->comprador->nif);
-                    $esp->addChild('NombreComprador', $linea->comprador->nombre);
-                    $esp->addChild('DireccionComprador', $linea->comprador->direccion);
-
-                    // 🔥 CANTIDAD
-                    $esp->addChild('Cantidad', $linea->cantidad);
-                }
-            }
-
-            $xmls[$establecimiento] = $xml->asXML();
+        // Asegurar carpeta
+        if (!Storage::exists('xml')) {
+            Storage::makeDirectory('xml');
         }
 
-        return $xmls;
+        // Agrupar por establecimiento (balsa / instalación)
+        $lineasAgrupadas = $venta->lineas->groupBy('instalacion_id');
+
+        $xmlGenerados = [];
+
+        foreach ($lineasAgrupadas as $instalacionId => $lineas) {
+
+            $dom = new DOMDocument('1.0', 'UTF-8');
+            $dom->formatOutput = true;
+
+            $root = $dom->createElement('DocumentoVenta');
+            $dom->appendChild($root);
+
+            // CABECERA
+            $cabecera = $dom->createElement('Cabecera');
+            $root->appendChild($cabecera);
+
+            $cabecera->appendChild($this->crearNodo($dom, 'Fecha', $venta->fecha ?? date('Y-m-d')));
+            $cabecera->appendChild($this->crearNodo($dom, 'NumeroDocumento', $venta->id));
+
+            // LINEAS
+            $lineasNode = $dom->createElement('Lineas');
+            $root->appendChild($lineasNode);
+
+            foreach ($lineas as $linea) {
+
+                $lineaNode = $dom->createElement('Linea');
+
+                // ESPECIE
+                $lineaNode->appendChild($this->crearNodo($dom, 'CodigoEspecie', $linea->especie->codigo ?? ''));
+
+                // PRODUCCION (código obligatorio XSD)
+                $lineaNode->appendChild($this->crearNodo($dom, 'MetodoProduccion', $linea->especie->metodo_produccion ?? '1'));
+
+                // CONSERVACION
+                $lineaNode->appendChild($this->crearNodo($dom, 'Conservacion', $linea->especie->cod_conservacion ?? '1'));
+
+                // PRESENTACION
+                $lineaNode->appendChild($this->crearNodo($dom, 'Presentacion', $linea->especie->cod_presentacion ?? '1'));
+
+                // OPCIONALES
+                $lineaNode->appendChild($this->crearNodo($dom, 'Frescura', $linea->especie->cod_frescura ?? ''));
+                $lineaNode->appendChild($this->crearNodo($dom, 'Calibre', $linea->especie->cod_calibre ?? ''));
+
+                // VENDEDOR
+                $lineaNode->appendChild($this->crearNodo($dom, 'NifVendedor', $linea->vendedor->nif ?? ''));
+                //$lineaNode->appendChild($this->crearNodo($dom, 'TipoDocumentoVendedor', $linea->vendedor->tipo_documento ?? '1'));
+                $lineaNode->appendChild(
+                    $this->crearNodo($dom, 'TipoCifNifVendedor',
+                        $this->mapTipoDocumento($linea->vendedor->tipo_documento ?? '1')
+                    )
+                );
+
+                // COMPRADOR
+                $lineaNode->appendChild($this->crearNodo($dom, 'NombreComprador', $linea->comprador->nombre ?? ''));
+
+                // PESO / CANTIDAD (ejemplo)
+                $lineaNode->appendChild($this->crearNodo($dom, 'Cantidad', $linea->cantidad ?? '0'));
+
+                $lineasNode->appendChild($lineaNode);
+            }
+
+            // VALIDAR XSD
+            $errores = $this->validarXml($dom);
+
+            $nombre = "venta_{$venta->id}_instalacion_{$instalacionId}.xml";
+            $ruta = "xml/$nombre";
+
+            // Guardar SIEMPRE (aunque tenga errores → debugging)
+            Storage::put($ruta, $dom->saveXML());
+
+            if (!empty($errores)) {
+                Log::error("XML con errores (Venta {$venta->id})", $errores);
+            }
+
+            $xmlGenerados[] = [
+                'ruta' => $ruta,
+                'errores' => $errores
+            ];
+        }
+
+        return $xmlGenerados;
     }
 
-    // 🔥 GENERAR CÓDIGO OFICIAL
-    private static function generarCodigoDocumento($venta, $establecimiento, $index)
+    private function crearNodo($dom, $nombre, $valor)
     {
-        $anio = date('Y');
-        $establec6 = substr(preg_replace('/\D/', '', $establecimiento), -6);
-        $secuencia = str_pad($index + 1, 7, '0', STR_PAD_LEFT);
-
-        return "NV01{$anio}{$establec6}{$secuencia}";
+        return $dom->createElement($nombre, htmlspecialchars($valor));
     }
+
+    private function validarXml(DOMDocument $dom)
+    {
+        libxml_use_internal_errors(true);
+
+        $xsd = storage_path('app/xsd/Esquema_WS_Envio_DocVenta_Andalucia.xsd');
+
+        $errores = [];
+
+        if (!$dom->schemaValidate($xsd)) {
+            foreach (libxml_get_errors() as $error) {
+                $errores[] = trim($error->message);
+            }
+        }
+
+        libxml_clear_errors();
+
+        return $errores;
+    }
+    private function mapTipoDocumento($valor)
+    {
+        // Si ya viene correcto (1,2,3)
+        if (in_array($valor, ['1','2','3'])) {
+            return $valor;
+        }
+
+        // Si viene como texto (por si acaso)
+        return match (strtoupper($valor)) {
+            'NIF' => '1',
+            'CIF' => '2',
+            'NIE' => '3',
+            default => '1',
+        };
+    }
+
 }

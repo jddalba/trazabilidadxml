@@ -16,9 +16,9 @@ class Venta extends Model
     ];
 
     // 🔗 Relación: una venta tiene muchas líneas
+
     public function lineas()
     {
-        return $this->hasMany(VentaLinea::class);
+        return $this->hasMany(\App\Models\VentaLinea::class);
     }
-
 }
