@@ -11,10 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('frescura_maestras', function (Blueprint $table) {
+        Schema::create('vendedores', function (Blueprint $table) {
+
             $table->id();
-            $table->string('codigo');
+
+            $table->string('nombre');
+            $table->integer('tipo_documento');
+            $table->string('nif');
+            $table->string('direccion');
+
             $table->timestamps();
+
         });
     }
 
@@ -23,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('frescura_maestras');
+        Schema::dropIfExists('vendedors');
     }
 };

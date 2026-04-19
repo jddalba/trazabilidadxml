@@ -15,8 +15,11 @@ class Especie extends Model
         'pais_al3',
         'metodo_produccion',
         'cod_conservacion',
-        'cod_presentacion',
-        'cod_frescura',
-        'cod_calibre'
+        'cod_presentacion'
     ];
+    public function metodo()
+    {
+        return $this->belongsTo(\App\Models\MetodoProduccion::class, 'metodo_produccion');
+    }
 }
+

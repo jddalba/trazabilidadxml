@@ -2,44 +2,108 @@
 
 @section('content')
 
-    <h2>Frescura</h2>
+    <div style="
+    max-width:900px;
+    margin:auto;
+">
 
-    <a href="{{ route('frescura.create') }}">Nueva frescura</a>
+        <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:25px;
+    ">
 
-    <table border="1">
+            <h2 style="margin:0;">Frescura</h2>
 
-        <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Acciones</th>
-        </tr>
+            <a href="{{ route('frescura.create') }}"
+               style="
+                background:#1565c0;
+                color:white;
+                padding:10px 16px;
+                border-radius:10px;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:bold;
+           ">
+                + Nueva frescura
+            </a>
 
-        @foreach($frescura as $f)
+        </div>
 
-            <tr>
+        <div style="
+        background:white;
+        border-radius:14px;
+        overflow:hidden;
+        box-shadow:0 10px 25px rgba(0,0,0,.05);
+    ">
 
-                <td>{{ $f->id }}</td>
-                <td>{{ $f->codigo }}</td>
+            <table width="100%" style="border-collapse:collapse;">
 
-                <td>
+                <tr style="background:#f8fafc;">
+                    <th style="padding:14px; text-align:left;">ID</th>
+                    <th style="padding:14px; text-align:left;">Código</th>
+                    <th style="padding:14px; text-align:left; width:180px;">Acciones</th>
+                </tr>
 
-                    <a href="{{ route('frescura.edit',$f->id) }}">Editar</a>
+                @foreach($frescura as $f)
 
-                    <form action="{{ route('frescura.destroy',$f->id) }}" method="POST">
+                    <tr style="border-top:1px solid #e5e7eb;">
 
-                        @csrf
-                        @method('DELETE')
+                        <td style="padding:14px;">{{ $f->id }}</td>
+                        <td style="padding:14px;">{{ $f->codigo }}</td>
 
-                        <button type="submit">Borrar</button>
+                        <td style="padding:14px;">
 
-                    </form>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
 
-                </td>
+                                <a href="{{ route('frescura.edit',$f->id) }}"
+                                   style="
+                                    background:#2563eb;
+                                    color:white;
+                                    padding:7px 12px;
+                                    border-radius:8px;
+                                    text-decoration:none;
+                                    font-size:13px;
+                               ">
+                                    Editar
+                                </a>
 
-            </tr>
+                                <form action="{{ route('frescura.destroy',$f->id) }}"
+                                      method="POST"
+                                      style="margin:0;">
 
-        @endforeach
+                                    @csrf
+                                    @method('DELETE')
 
-    </table>
+                                    <button type="submit"
+                                            onclick="return confirm('¿Seguro que deseas borrar este registro?')"
+                                            style="
+                                            background:#dc2626;
+                                            color:white;
+                                            border:none;
+                                            padding:7px 12px;
+                                            border-radius:8px;
+                                            cursor:pointer;
+                                            font-size:13px;
+                                        ">
+                                        Borrar
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @endforeach
+
+            </table>
+
+        </div>
+
+    </div>
 
 @endsection

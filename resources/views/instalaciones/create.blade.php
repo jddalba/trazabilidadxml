@@ -1,33 +1,91 @@
 @extends('layouts.app')
 
 @section('content')
-    <h2>Nueva instalación</h2>
 
-    <form method="POST" action="{{ route('instalaciones.store') }}">
+    <div style="
+    max-width:700px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+">
 
+        <h1 style="margin-top:0; margin-bottom:25px;">
+            Nueva Instalación
+        </h1>
 
-        @csrf
+        <form method="POST" action="{{ route('instalaciones.store') }}">
 
-        <label>Nombre</label>
-        <br>
-        <input type="text" name="nombre">
-        <br><br>
+            @csrf
 
-        <label>Código REGA</label>
-        <br>
-        <input type="text" name="codigo_rega">
-        <br><br>
+            <label style="font-weight:bold;">Nombre</label>
+            <input type="text"
+                   name="nombre"
+                   style="
+                    width:100%;
+                    padding:10px;
+                    margin-top:6px;
+                    margin-bottom:18px;
+                    border:1px solid #ccc;
+                    border-radius:8px;
+               ">
 
-        <label>Establecimiento Venta</label>
-        <br>
-        <input type="text" name="establecimiento_venta">
-        <br><br>
+            <label style="font-weight:bold;">Código REGA</label>
+            <input type="text"
+                   name="codigo_rega"
+                   style="
+                    width:100%;
+                    padding:10px;
+                    margin-top:6px;
+                    margin-bottom:18px;
+                    border:1px solid #ccc;
+                    border-radius:8px;
+               ">
 
-        <button type="submit">Guardar</button>
+            <label style="font-weight:bold;">Establecimiento Venta</label>
+            <input type="text"
+                   name="establecimiento_venta"
+                   style="
+                    width:100%;
+                    padding:10px;
+                    margin-top:6px;
+                    margin-bottom:25px;
+                    border:1px solid #ccc;
+                    border-radius:8px;
+               ">
 
-    </form>
+            <div style="display:flex; gap:10px;">
 
-    <br>
+                <button type="submit"
+                        style="
+                    background:#2563eb;
+                    color:white;
+                    border:none;
+                    padding:10px 18px;
+                    border-radius:8px;
+                    cursor:pointer;
+                    font-weight:bold;
+                ">
+                    Guardar
+                </button>
 
-    <a href="{{ route('instalaciones.index') }}">Volver</a>
+                <a href="{{ route('instalaciones.index') }}"
+                   style="
+                    background:#6b7280;
+                    color:white;
+                    padding:10px 18px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-weight:bold;
+               ">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
+
 @endsection

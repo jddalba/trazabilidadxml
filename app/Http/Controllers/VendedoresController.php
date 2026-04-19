@@ -25,9 +25,9 @@ class VendedoresController extends Controller
         Vendedor::create([
 
             'nombre' => $request->nombre,
-            'nif' => $request->nif,
-            'direccion' => $request->direccion,
             'tipo_documento' => $request->tipo_documento,
+            'nif' => $request->nif,
+            'direccion' => $request->direccion
 
         ]);
 
@@ -52,9 +52,10 @@ class VendedoresController extends Controller
         $vendedor->update([
 
             'nombre' => $request->nombre,
-            'nif' => $request->nif,
-            'direccion' => $request->direccion,
             'tipo_documento' => $request->tipo_documento,
+            'nif' => $request->nif,
+            'direccion' => $request->direccion
+
 
         ]);
 

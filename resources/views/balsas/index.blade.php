@@ -2,46 +2,99 @@
 
 @section('content')
 
-    <h2>Balsas</h2>
+    <div style="
+max-width:1100px;
+margin:auto;
+">
 
-    <a href="{{ route('balsas.create') }}">Nueva balsa</a>
+        <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    ">
 
-    <table border="1">
+            <h1 style="margin:0;">Balsas</h1>
 
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Instalación</th>
-            <th>Acciones</th>
-        </tr>
+            <a href="{{ route('balsas.create') }}"
+               class="btn">
+                + Nueva balsa
+            </a>
 
-        @foreach($balsas as $b)
+        </div>
 
-            <tr>
+        <div style="
+    overflow-x:auto;
+    border-radius:16px;
+    ">
 
-                <td>{{ $b->id }}</td>
-                <td>{{ $b->nombre }}</td>
-                <td>{{ $b->instalacion->nombre ?? '' }}</td>
+            <table>
 
-                <td>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Instalación</th>
+                    <th style="width:180px;">Acciones</th>
+                </tr>
+                </thead>
 
-                    <a href="{{ route('balsas.edit',$b->id) }}">Editar</a>
+                <tbody>
 
-                    <form action="{{ route('balsas.destroy',$b->id) }}" method="POST">
+                @foreach($balsas as $b)
 
-                        @csrf
-                        @method('DELETE')
+                    <tr>
 
-                        <button type="submit">Borrar</button>
+                        <td>{{ $b->id }}</td>
+                        <td>{{ $b->nombre }}</td>
+                        <td>{{ $b->instalacion->nombre ?? '' }}</td>
 
-                    </form>
+                        <td>
 
-                </td>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
 
-            </tr>
+                                <a href="{{ route('balsas.edit',$b->id) }}"
+                                   class="btn">
+                                    Editar
+                                </a>
 
-        @endforeach
+                                <form action="{{ route('balsas.destroy',$b->id) }}"
+                                      method="POST"
+                                      style="margin:0;">
 
-    </table>
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit"
+                                            class="btn btn-danger"
+                                            onclick="return confirm('¿Seguro que deseas borrar esta balsa?')">
+                                        Borrar
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @endforeach
+
+                @if($balsas->isEmpty())
+                    <tr>
+                        <td colspan="4" style="text-align:center; color:#64748b;">
+                            No hay balsas registradas
+                        </td>
+                    </tr>
+                @endif
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 @endsection

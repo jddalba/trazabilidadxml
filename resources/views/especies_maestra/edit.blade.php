@@ -2,30 +2,128 @@
 
 @section('content')
 
-    <h2>Editar especie maestra</h2>
+    <div style="
+    max-width:700px;
+    margin:auto;
+    background:white;
+    padding:30px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,.05);
+">
 
-    <form method="POST" action="{{ route('especies-maestra.update',$especie->id) }}">
+        <h2 style="margin-top:0; margin-bottom:25px;">
+            Editar especie maestra
+        </h2>
 
-        @csrf
-        @method('PUT')
+        @if ($errors->any())
 
-        <label>Nombre Comercial</label>
-        <br>
-        <input type="text" name="nombre_comercial" value="{{ $especie->nombre_comercial }}">
-        <br><br>
+            <div style="
+            background:#fee2e2;
+            color:#991b1b;
+            padding:15px;
+            border-radius:10px;
+            margin-bottom:20px;
+        ">
 
-        <label>Nombre Científico</label>
-        <br>
-        <input type="text" name="nombre_cientifico" value="{{ $especie->nombre_cientifico }}">
-        <br><br>
+                <strong>Revisa los siguientes errores:</strong>
 
-        <label>Código AL3</label>
-        <br>
-        <input type="text" name="codigo_al3" value="{{ $especie->codigo_al3 }}">
-        <br><br>
+                <ul style="margin-top:10px; padding-left:20px;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
 
-        <button type="submit">Actualizar</button>
+            </div>
 
-    </form>
+        @endif
+
+        <form method="POST" action="{{ route('especies-maestra.update',$especie->id) }}">
+
+            @csrf
+            @method('PUT')
+
+            <div style="margin-bottom:18px;">
+
+                <label style="font-weight:bold;">Nombre Comercial</label>
+
+                <input type="text"
+                       name="nombre_comercial"
+                       value="{{ old('nombre_comercial', $especie->nombre_comercial) }}"
+                       style="
+                        width:100%;
+                        padding:10px;
+                        margin-top:6px;
+                        border:1px solid #ccc;
+                        border-radius:8px;
+                   ">
+
+            </div>
+
+            <div style="margin-bottom:18px;">
+
+                <label style="font-weight:bold;">Nombre Científico</label>
+
+                <input type="text"
+                       name="nombre_cientifico"
+                       value="{{ old('nombre_cientifico', $especie->nombre_cientifico) }}"
+                       style="
+                        width:100%;
+                        padding:10px;
+                        margin-top:6px;
+                        border:1px solid #ccc;
+                        border-radius:8px;
+                   ">
+
+            </div>
+
+            <div style="margin-bottom:22px;">
+
+                <label style="font-weight:bold;">Código AL3</label>
+
+                <input type="text"
+                       name="codigo_al3"
+                       value="{{ old('codigo_al3', $especie->codigo_al3) }}"
+                       style="
+                        width:100%;
+                        padding:10px;
+                        margin-top:6px;
+                        border:1px solid #ccc;
+                        border-radius:8px;
+                   ">
+
+            </div>
+
+            <div style="display:flex; gap:10px;">
+
+                <button type="submit"
+                        style="
+                        background:#2563eb;
+                        color:white;
+                        border:none;
+                        padding:12px 18px;
+                        border-radius:10px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    ">
+                    Actualizar
+                </button>
+
+                <a href="{{ route('especies-maestra.index') }}"
+                   style="
+                    background:#6b7280;
+                    color:white;
+                    padding:12px 18px;
+                    border-radius:10px;
+                    text-decoration:none;
+                    font-weight:bold;
+               ">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection

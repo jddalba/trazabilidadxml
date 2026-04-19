@@ -22,6 +22,11 @@ class EspeciesMaestraController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'nombre_comercial' => 'required',
+            'nombre_cientifico' => 'required',
+            'codigo_al3' => 'required',
+        ]);
         EspecieMaestra::create([
 
             'nombre_comercial' => $request->nombre_comercial,
@@ -42,6 +47,11 @@ class EspeciesMaestraController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'nombre_comercial' => 'required',
+            'nombre_cientifico' => 'required',
+            'codigo_al3' => 'required',
+        ]);
         $especie = EspecieMaestra::find($id);
 
         $especie->update([

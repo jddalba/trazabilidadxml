@@ -2,26 +2,73 @@
 
 @section('content')
 
-    <h2>Nueva Presentación</h2>
+    <h2 style="margin-bottom:25px;">Nueva Presentación</h2>
 
-    <form method="POST" action="{{ route('presentaciones.store') }}">
+    <div style="max-width:550px;">
 
-        @csrf
+        <form method="POST" action="{{ route('presentaciones.store') }}">
 
-        <label>Código</label>
-        <br>
-        <input type="text" name="codigo">
+            @csrf
 
-        <br><br>
+            <div style="margin-bottom:18px;">
 
-        <label>Descripción</label>
-        <br>
-        <input type="text" name="descripcion">
+                <label>Código</label>
 
-        <br><br>
+                <input
+                    type="text"
+                    name="codigo"
+                    value="{{ old('codigo') }}"
+                    required
+                    placeholder="Ej: WHL"
+                >
 
-        <button type="submit">Guardar</button>
+            </div>
 
-    </form>
+            <div style="margin-bottom:18px;">
+
+                <label>Descripción</label>
+
+                <input
+                    type="text"
+                    name="descripcion"
+                    value="{{ old('descripcion') }}"
+                    required
+                    placeholder="Ej: Entero"
+                >
+
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:25px;">
+
+                <button type="submit"
+                        style="
+                        background:#059669;
+                        color:white;
+                        border:none;
+                        padding:12px 18px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    ">
+                    Guardar
+                </button>
+
+                <a href="{{ route('presentaciones.index') }}"
+                   style="
+                    background:#64748b;
+                    color:white;
+                    padding:12px 18px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-weight:bold;
+               ">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection

@@ -14,32 +14,35 @@ class VentaLinea extends Model
 
     protected $fillable = [
         'venta_id',
+        'instalacion_id',
         'especie_id',
+        'calibre',     // 🔥 nuevo
+        'frescura',   // 🔥 nuevo
         'lote',
-        'fecha_venta',
         'cantidad',
         'vendedor_id',
         'comprador_id'
     ];
 
-    public function venta()
+    public function instalacion()
     {
-        return $this->belongsTo(Venta::class);
+        return $this->belongsTo(\App\Models\Instalacion::class);
     }
 
     public function especie()
     {
-        return $this->belongsTo(Especie::class);
+        return $this->belongsTo(\App\Models\Especie::class);
     }
 
     public function vendedor()
     {
-        return $this->belongsTo(Vendedor::class);
+        return $this->belongsTo(\App\Models\Vendedor::class);
     }
 
     public function comprador()
     {
-        return $this->belongsTo(Comprador::class);
+        return $this->belongsTo(\App\Models\Comprador::class);
     }
+
 
 }

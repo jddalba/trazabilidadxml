@@ -2,36 +2,65 @@
 
 @section('content')
 
-    <h2>Editar Balsa</h2>
+    <div style="
+max-width:700px;
+margin:auto;
+">
 
-    <form method="POST" action="{{ route('balsas.update',$balsa->id) }}">
+        <h1 style="
+    margin:0 0 25px 0;
+    ">
+            Editar Balsa
+        </h1>
 
-        @csrf
-        @method('PUT')
+        <form method="POST" action="{{ route('balsas.update',$balsa->id) }}">
 
-        <label>Nombre</label>
-        <br>
-        <input type="text" name="nombre" value="{{ $balsa->nombre }}">
+            @csrf
+            @method('PUT')
 
-        <br><br>
+            <label>Nombre</label>
 
-        <label>Instalación</label>
-        <br>
+            <input type="text"
+                   name="nombre"
+                   value="{{ old('nombre', $balsa->nombre) }}"
+                   required>
 
-        <select name="instalacion_id">
+            <label>Instalación</label>
 
-            @foreach($instalaciones as $i)
-                <option value="{{ $i->id }}" {{ $balsa->instalacion_id == $i->id ? 'selected' : '' }}>
-                    {{ $i->nombre }}
-                </option>
-            @endforeach
+            <select name="instalacion_id" required>
 
-        </select>
+                @foreach($instalaciones as $i)
 
-        <br><br>
+                    <option value="{{ $i->id }}"
+                        {{ $balsa->instalacion_id == $i->id ? 'selected' : '' }}>
+                        {{ $i->nombre }}
+                    </option>
 
-        <button type="submit">Actualizar</button>
+                @endforeach
 
-    </form>
+            </select>
+
+            <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:10px;
+        ">
+
+                <button type="submit" class="btn btn-success">
+                    Actualizar
+                </button>
+
+                <a href="{{ route('balsas.index') }}"
+                   class="btn"
+                   style="background:#64748b;">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection

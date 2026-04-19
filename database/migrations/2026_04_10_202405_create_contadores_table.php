@@ -11,21 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('instalaciones', function (Blueprint $table) {
+        Schema::create('contadores', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
-            $table->string('codigo_rega');
-            $table->string('establecimiento_venta');
+            $table->string('establecimiento');
+            $table->integer('anio');
+            $table->integer('contador')->default(0);
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('instalaciones');
+        Schema::dropIfExists('contadores');
     }
 };

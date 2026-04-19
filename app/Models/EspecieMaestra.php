@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class EspecieMaestra extends Model
 {
-
     protected $table = 'especies_maestras';
 
     protected $fillable = [
@@ -14,5 +13,4 @@ class EspecieMaestra extends Model
         'nombre_cientifico',
         'codigo_al3'
     ];
-
 }

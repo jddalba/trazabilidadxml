@@ -10,8 +10,17 @@ class Vendedor extends Model
 
     protected $fillable = [
         'nombre',
+        'tipo_documento',
         'nif',
-        'direccion',
-        'tipo_documento'
+        'direccion'
     ];
+    public function getTipoDocumentoTextoAttribute()
+    {
+        return match((int) $this->tipo_documento) {
+            1 => 'CIF',
+            2 => 'NIF',
+            3 => 'NIE',
+            default => 'Desconocido',
+        };
+    }
 }

@@ -2,27 +2,72 @@
 
 @section('content')
 
-    <h2>Editar Presentación</h2>
+    <h2 style="margin-bottom:25px;">Editar Presentación</h2>
 
-    <form method="POST" action="{{ route('presentaciones.update',$presentacion->id) }}">
+    <div style="max-width:550px;">
 
-        @csrf
-        @method('PUT')
+        <form method="POST" action="{{ route('presentaciones.update',$presentacion->id) }}">
 
-        <label>Código</label>
-        <br>
-        <input type="text" name="codigo" value="{{ $presentacion->codigo }}">
+            @csrf
+            @method('PUT')
 
-        <br><br>
+            <div style="margin-bottom:18px;">
 
-        <label>Descripción</label>
-        <br>
-        <input type="text" name="descripcion" value="{{ $presentacion->descripcion }}">
+                <label>Código</label>
 
-        <br><br>
+                <input
+                    type="text"
+                    name="codigo"
+                    value="{{ old('codigo', $presentacion->codigo) }}"
+                    required
+                >
 
-        <button type="submit">Actualizar</button>
+            </div>
 
-    </form>
+            <div style="margin-bottom:18px;">
+
+                <label>Descripción</label>
+
+                <input
+                    type="text"
+                    name="descripcion"
+                    value="{{ old('descripcion', $presentacion->descripcion) }}"
+                    required
+                >
+
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:25px;">
+
+                <button type="submit"
+                        style="
+                        background:#059669;
+                        color:white;
+                        border:none;
+                        padding:12px 18px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    ">
+                    Actualizar
+                </button>
+
+                <a href="{{ route('presentaciones.index') }}"
+                   style="
+                    background:#64748b;
+                    color:white;
+                    padding:12px 18px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-weight:bold;
+               ">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection

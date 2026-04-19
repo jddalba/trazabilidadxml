@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('especies', function (Blueprint $table) {
 
             $table->id();
-            $table->string('codigo'); // código interno
+            $table->string('codigo')->unique(); // código interno
             $table->string('especie_comercial');
             $table->string('especie_cientifica');
             $table->string('especie_al3');
@@ -22,8 +22,6 @@ return new class extends Migration
             $table->string('metodo_produccion');
             $table->string('cod_conservacion');
             $table->string('cod_presentacion');
-            $table->string('cod_frescura')->nullable();
-            $table->string('cod_calibre')->nullable();
             $table->timestamps();
         });
     }

@@ -1,134 +1,198 @@
 @extends('layouts.app')
 
 @section('content')
-    <h2>Nueva especie</h1>
 
-    <div style="width:500px">
+    <h1 style="margin-bottom:25px;">Nueva Especie</h1>
 
-        <form method="POST" action="{{ route('especies.store') }}">
-            @csrf
+    @if ($errors->any())
+        <div style="
+        background:#fee2e2;
+        color:#991b1b;
+        padding:15px;
+        border-radius:10px;
+        margin-bottom:20px;
+    ">
+            <strong>Revisa los siguientes errores:</strong>
 
-            <div class="mb-3">
-                <label for="codigo" class="form-label">Código</label>
-                <input
-                    type="text"
-                    name="codigo"
-                    id="codigo"
-                    class="form-control"
-                    value="{{ old('codigo') }}"
-                    required
-                >
-                @error('codigo')
-                <div class="text-danger">{{ $message }}</div>
-                @enderror
+            <ul style="margin-top:10px; padding-left:20px;">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('especies.store') }}">
+
+        @csrf
+
+        <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+        gap:18px;
+    ">
+
+            <div>
+                <label>Código</label>
+                <input type="text"
+                       name="codigo"
+                       value="{{ old('codigo') }}"
+                       required>
             </div>
 
-            <div style="margin-bottom:15px">
+            <div>
                 <label>Especie Comercial</label>
-                <br>
-                <select name="especie_comercial" id="especie_select">
+                <select name="especie_maestra_id"
+                        id="especie_select"
+                        required>
+
                     <option value="">-- Selecciona Especie --</option>
-                    @foreach($especies_maestra as $e)
+
+                    @foreach($especies_maestras as $e)
                         <option
-                            value="{{ $e->nombre_comercial }}"
+                            value="{{ $e->id }}"
                             data-cientifico="{{ $e->nombre_cientifico }}"
-                            data-al3="{{ $e->codigo_al3 }}"
-                        >
+                            data-al3="{{ $e->codigo_al3 }}">
                             {{ $e->nombre_comercial }}
                         </option>
                     @endforeach
+
                 </select>
             </div>
 
-            <div style="margin-bottom:15px">
+            <div>
                 <label>Especie Científica</label>
-                <br>
-                <input type="text" name="especie_cientifica" id="cientifico" readonly>
+                <input type="text"
+                       id="cientifico"
+                       readonly
+                       style="background:#f1f5f9;">
             </div>
 
-            <div style="margin-bottom:15px">
+            <div>
                 <label>Especie AL3</label>
-                <br>
-                <input type="text" name="especie_al3" id="al3" readonly>
+                <input type="text"
+                       name="especie_al3"
+                       id="al3"
+                       readonly
+                       style="background:#f1f5f9;">
             </div>
 
-            <div style="margin-bottom:15px">
-                <x-select
-                    name="pais_al3"
-                    label="País"
-                    :options="$paises"
-                    valueField="codigo_al3"
-                    textField="nombre"
-                />
+            <div>
+                <label>País</label>
+                <select name="pais_al3">
+                    <option value="">-- Selecciona País --</option>
+
+                    @foreach($paises as $p)
+                        <option value="{{ $p->codigo_al3 }}">
+                            {{ $p->nombre }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
 
-            <div style="margin-bottom:15px">
+            <div>
                 <label>Método Producción</label>
-                <br>
-                <select name="metodo_produccion" required>
-
+                <select name="metodo_produccion">
                     <option value="">-- Selecciona Método --</option>
 
                     @foreach($metodos as $m)
-                        <option value="{{ $m->codigo }}">
+                        <option value="{{ $m->id }}">
                             {{ $m->descripcion }}
                         </option>
                     @endforeach
-
                 </select>
             </div>
-            <div style="margin-bottom:15px">
-                <x-select
-                    name="cod_conservacion"
-                    label="Conservación"
-                    :options="$conservaciones"
-                    valueField="codigo"
-                    textField="descripcion"
-                />
+
+            <div>
+                <label>Conservación</label>
+                <select name="cod_conservacion">
+                    <option value="">-- Selecciona --</option>
+
+                    @foreach($conservaciones as $c)
+                        <option value="{{ $c->codigo }}">
+                            {{ $c->descripcion }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div style="margin-bottom:15px">
-                <x-select
-                    name="cod_presentacion"
-                    label="Presentación"
-                    :options="$presentaciones"
-                    valueField="codigo"
-                    textField="descripcion"
-                />
+
+            <div>
+                <label>Presentación</label>
+                <select name="cod_presentacion">
+                    <option value="">-- Selecciona --</option>
+
+                    @foreach($presentaciones as $p)
+                        <option value="{{ $p->codigo }}">
+                            {{ $p->descripcion }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div style="margin-bottom:15px">
-                <x-select
-                    name="cod_frescura"
-                    label="Frescura"
-                    :options="$frescura"
-                    valueField="codigo"
-                    textField="codigo"
-                />
+
+            <div>
+                <label>Frescura</label>
+                <select name="cod_frescura">
+                    <option value="">-- Selecciona --</option>
+
+                    @foreach($frescura as $f)
+                        <option value="{{ $f->codigo }}">
+                            {{ $f->codigo }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div style="margin-bottom:15px">
-                <x-select
-                    name="cod_calibre"
-                    label="Calibre"
-                    :options="$calibres"
-                    valueField="codigo"
-                    textField="codigo"
-                />
+
+            <div>
+                <label>Calibre</label>
+                <select name="cod_calibre">
+                    <option value="">-- Selecciona --</option>
+
+                    @foreach($calibres as $c)
+                        <option value="{{ $c->codigo }}">
+                            {{ $c->codigo }}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div style="margin-bottom:15px">
-                <button type="submit">Guardar</button>
-            </div>
-        </form>
-    </div>
+
+        </div>
+
+        <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:25px;
+    ">
+
+            <button type="submit" style="background:#059669;">
+                Guardar Especie
+            </button>
+
+            <a href="{{ route('especies.index') }}"
+               class="btn"
+               style="background:#6b7280;">
+                Volver
+            </a>
+
+        </div>
+
+    </form>
 
     <script>
         document.getElementById('especie_select').addEventListener('change', function(){
-            var selected = this.options[this.selectedIndex];
+
+            let selected = this.options[this.selectedIndex];
+
             if(selected.value == ""){
                 document.getElementById('cientifico').value = "";
                 document.getElementById('al3').value = "";
                 return;
             }
+
             document.getElementById('cientifico').value = selected.dataset.cientifico;
             document.getElementById('al3').value = selected.dataset.al3;
+
         });
     </script>
+
 @endsection

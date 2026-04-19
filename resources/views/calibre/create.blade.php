@@ -2,18 +2,43 @@
 
 @section('content')
 
-    <h2>Nuevo Calibre</h2>
+    <h1 style="margin-bottom:25px;">Nuevo Calibre</h1>
 
     <form method="POST" action="{{ route('calibres.store') }}">
 
         @csrf
 
-        <label>Código</label>
-        <br>
-        <input type="text" name="codigo">
+        <div style="
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+        gap:18px;
+    ">
 
-        <br><br>
-        <button type="submit">Guardar</button>
+            <div>
+                <label>Código</label>
+                <input type="text" name="codigo">
+            </div>
+
+        </div>
+
+        <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:25px;
+    ">
+
+            <button type="submit">
+                Guardar
+            </button>
+
+            <a href="{{ route('calibres.index') }}"
+               class="btn"
+               style="background:#6b7280;">
+                Volver
+            </a>
+
+        </div>
 
     </form>
 

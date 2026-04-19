@@ -15,9 +15,8 @@ return new class extends Migration
         Schema::create('compradores', function (Blueprint $table) {
 
             $table->id();
-
-            $table->string('nombre');
             $table->string('nif');
+            $table->string('nombre');
             $table->string('direccion');
 
             $table->timestamps();

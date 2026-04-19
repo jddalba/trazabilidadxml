@@ -2,33 +2,63 @@
 
 @section('content')
 
-    <h2>Nueva Balsa</h2>
+    <div style="
+max-width:700px;
+margin:auto;
+">
 
-    <form method="POST" action="{{ route('balsas.store') }}">
+        <h1 style="
+    margin:0 0 25px 0;
+    ">
+            Nueva Balsa
+        </h1>
 
-        @csrf
+        <form method="POST" action="{{ route('balsas.store') }}">
 
-        <label>Nombre</label>
-        <br>
-        <input type="text" name="nombre">
+            @csrf
 
-        <br><br>
+            <label>Nombre</label>
 
-        <label>Instalación</label>
-        <br>
+            <input type="text"
+                   name="nombre"
+                   value="{{ old('nombre') }}"
+                   required>
 
-        <select name="instalacion_id">
+            <label>Instalación</label>
 
-            @foreach($instalaciones as $i)
-                <option value="{{ $i->id }}">{{ $i->nombre }}</option>
-            @endforeach
+            <select name="instalacion_id" required>
 
-        </select>
+                @foreach($instalaciones as $i)
 
-        <br><br>
+                    <option value="{{ $i->id }}">
+                        {{ $i->nombre }}
+                    </option>
 
-        <button type="submit">Guardar</button>
+                @endforeach
 
-    </form>
+            </select>
+
+            <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:10px;
+        ">
+
+                <button type="submit" class="btn">
+                    Guardar
+                </button>
+
+                <a href="{{ route('balsas.index') }}"
+                   class="btn"
+                   style="background:#64748b;">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection

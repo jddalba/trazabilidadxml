@@ -2,48 +2,101 @@
 
 @section('content')
 
-    <h2>Compradores</h2>
+    <div style="
+max-width:1100px;
+margin:auto;
+">
 
-    <a href="{{ route('compradores.create') }}">Nuevo Comprador</a>
+        <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+    ">
 
-    <table border="1">
+            <h1 style="margin:0;">Compradores</h1>
 
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>NIF</th>
-            <th>Dirección</th>
-            <th>Acciones</th>
-        </tr>
+            <a href="{{ route('compradores.create') }}"
+               class="btn">
+                + Nuevo Comprador
+            </a>
 
-        @foreach($compradores as $c)
+        </div>
 
-            <tr>
+        <div style="
+    overflow-x:auto;
+    border-radius:16px;
+    ">
 
-                <td>{{ $c->id }}</td>
-                <td>{{ $c->nombre }}</td>
-                <td>{{ $c->nif }}</td>
-                <td>{{ $c->direccion }}</td>
+            <table>
 
-                <td>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>NIF</th>
+                    <th>Dirección</th>
+                    <th style="width:180px;">Acciones</th>
+                </tr>
+                </thead>
 
-                    <a href="{{ route('compradores.edit',$c->id) }}">Editar</a>
+                <tbody>
 
-                    <form action="{{ route('compradores.destroy',$c->id) }}" method="POST">
+                @foreach($compradores as $c)
 
-                        @csrf
-                        @method('DELETE')
+                    <tr>
 
-                        <button type="submit">Borrar</button>
+                        <td>{{ $c->id }}</td>
+                        <td>{{ $c->nombre }}</td>
+                        <td>{{ $c->nif }}</td>
+                        <td>{{ $c->direccion }}</td>
 
-                    </form>
+                        <td>
 
-                </td>
+                            <div style="display:flex; gap:8px; flex-wrap:wrap;">
 
-            </tr>
+                                <a href="{{ route('compradores.edit',$c->id) }}"
+                                   class="btn">
+                                    Editar
+                                </a>
 
-        @endforeach
+                                <form action="{{ route('compradores.destroy',$c->id) }}"
+                                      method="POST"
+                                      style="margin:0;">
 
-    </table>
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button type="submit"
+                                            class="btn btn-danger"
+                                            onclick="return confirm('¿Seguro que deseas borrar este comprador?')">
+                                        Borrar
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                @endforeach
+
+                @if($compradores->isEmpty())
+                    <tr>
+                        <td colspan="5" style="text-align:center; color:#64748b;">
+                            No hay compradores registrados
+                        </td>
+                    </tr>
+                @endif
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 
 @endsection

@@ -2,43 +2,83 @@
 
 @section('content')
 
-    <h2>Calibre</h2>
+    <div style="max-width:100%;">
 
-    <a href="{{ route('calibres.create') }}">Nuevo Calibre</a>
+        <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        gap:15px;
+        flex-wrap:wrap;
+        margin-bottom:25px;
+    ">
 
-    <table border="1">
+            <h1 style="margin:0;">Calibre</h1>
 
-        <tr>
-            <th>ID</th>
-            <th>Código</th>
-            <th>Acciones</th>
-        </tr>
+            <a href="{{ route('calibres.create') }}"
+               class="btn">
+                + Nuevo Calibre
+            </a>
 
-        @foreach($calibre as $c)
+        </div>
 
+        <table>
+
+            <thead>
             <tr>
-
-                <td>{{ $c->id }}</td>
-                <td>{{ $c->codigo }}</td>
-                <td>
-
-                    <a href="{{ route('calibres.edit',$c->id) }}">Editar</a>
-
-                    <form action="{{ route('calibres.destroy',$c->id) }}" method="POST">
-
-                        @csrf
-                        @method('DELETE')
-
-                        <button type="submit">Borrar</button>
-
-                    </form>
-
-                </td>
-
+                <th>ID</th>
+                <th>Código</th>
+                <th>Acciones</th>
             </tr>
+            </thead>
 
-        @endforeach
+            <tbody>
 
-    </table>
+            @foreach($calibre as $c)
+
+                <tr>
+
+                    <td>{{ $c->id }}</td>
+                    <td>{{ $c->codigo }}</td>
+
+                    <td>
+                        <div style="
+                        display:flex;
+                        gap:8px;
+                        flex-wrap:wrap;
+                    ">
+
+                            <a href="{{ route('calibres.edit',$c->id) }}"
+                               class="btn">
+                                Editar
+                            </a>
+
+                            <form action="{{ route('calibres.destroy',$c->id) }}"
+                                  method="POST"
+                                  style="margin:0;">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button type="submit"
+                                        onclick="return confirm('¿Seguro que deseas borrar este calibre?')"
+                                        style="background:#dc2626;">
+                                    Borrar
+                                </button>
+
+                            </form>
+
+                        </div>
+                    </td>
+
+                </tr>
+
+            @endforeach
+
+            </tbody>
+
+        </table>
+
+    </div>
 
 @endsection

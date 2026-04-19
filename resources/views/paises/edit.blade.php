@@ -2,25 +2,74 @@
 
 @section('content')
 
-    <h2>Editar Paises_muestra</h2>
+    <h2 style="margin-bottom:25px;">Editar País</h2>
 
-    <form method="POST" action="{{ route('paises.update',$pais->id) }}">
+    <div style="max-width:550px;">
 
-        @csrf
-        @method('PUT')
+        <form method="POST" action="{{ route('paises.update',$pais->id) }}">
 
-        <label>Nombre País</label>
-        <br>
-        <input type="text" name="nombre" value="{{ $pais->nombre }}">
-        <br><br>
+            @csrf
+            @method('PUT')
 
-        <label>Nombre AL3</label>
-        <br>
-        <input type="text" name="codigo_al3" value="{{ $pais->codigo_al3 }}">
-        <br><br>
+            <div style="margin-bottom:18px;">
 
-        <button type="submit">Actualizar</button>
+                <label>Nombre País</label>
 
-    </form>
+                <input
+                    type="text"
+                    name="nombre"
+                    value="{{ old('nombre', $pais->nombre) }}"
+                    required
+                >
+
+            </div>
+
+            <div style="margin-bottom:18px;">
+
+                <label>Código AL3</label>
+
+                <input
+                    type="text"
+                    name="codigo_al3"
+                    value="{{ old('codigo_al3', $pais->codigo_al3) }}"
+                    required
+                    maxlength="3"
+                    style="text-transform:uppercase;"
+                >
+
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:25px;">
+
+                <button type="submit"
+                        style="
+                        background:#059669;
+                        color:white;
+                        border:none;
+                        padding:12px 18px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    ">
+                    Actualizar
+                </button>
+
+                <a href="{{ route('paises.index') }}"
+                   style="
+                    background:#64748b;
+                    color:white;
+                    padding:12px 18px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-weight:bold;
+               ">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection

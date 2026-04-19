@@ -2,48 +2,211 @@
 
 @section('content')
 
-    <h2>Ventas</h2>
+    @if(session('success'))
+        <div style="
+        background:#d1fae5;
+        color:#065f46;
+        padding:14px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-weight:bold;
+    ">
+            {{ session('success') }}
+        </div>
+    @endif
 
-    <a href="{{ route('ventas.create') }}">Nueva venta</a>
+    @if(session('error'))
+        <div style="
+        background:#fee2e2;
+        color:#991b1b;
+        padding:14px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-weight:bold;
+    ">
+            {{ session('error') }}
+        </div>
+    @endif
 
-    <table border="1">
+    <div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+">
 
-        <tr>
-            <th>ID</th>
-            <th>Num Envío</th>
-            <th>Establecimiento</th>
-            <th>Fecha</th>
-            <th>Acciones</th>
-        </tr>
+        <h2 style="margin:0;">Ventas</h2>
 
-        @foreach($ventas as $v)
+        <a href="{{ route('ventas.create') }}"
+           style="
+            background:#1565c0;
+            color:white;
+            padding:10px 16px;
+            border-radius:8px;
+            text-decoration:none;
+            font-size:14px;
+            font-weight:bold;
+       ">
+            + Nueva venta
+        </a>
 
-            <tr>
+    </div>
 
-                <td>{{ $v->id }}</td>
-                <td>{{ $v->num_envio }}</td>
-                <td>{{ $v->num_identificacion_establec }}</td>
-                <td>{{ $v->fecha }}</td>
+    @forelse($ventas as $venta)
 
-                <td>
+        <div style="
+        background:white;
+        border-radius:14px;
+        box-shadow:0 8px 25px rgba(0,0,0,0.05);
+        margin-bottom:25px;
+        overflow:hidden;
+    ">
 
-                    <a href="{{ route('ventas.edit',$v->id) }}">Editar</a>
+            {{-- CABECERA --}}
+            <div style="
+            padding:18px 22px;
+            border-bottom:1px solid #e5e7eb;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            gap:20px;
+            flex-wrap:wrap;
+        ">
 
-                    <form action="{{ route('ventas.destroy',$v->id) }}" method="POST">
+                <div>
+                    <div style="font-size:22px; font-weight:bold; color:#0f172a;">
+                        Venta #{{ $venta->id }}
+                    </div>
+
+                    <div style="margin-top:6px; color:#475569; font-size:14px;">
+                        Envío: <strong>{{ $venta->num_envio }}</strong> |
+                        Establecimiento: <strong>{{ $venta->num_identificacion_establec }}</strong> |
+                        Fecha: <strong>{{ $venta->fecha }}</strong>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+
+                    <a href="{{ route('ventas.edit', $venta->id) }}"
+                       style="
+                        background:#2563eb;
+                        color:white;
+                        padding:8px 12px;
+                        border-radius:7px;
+                        text-decoration:none;
+                        font-size:13px;
+                   ">
+                        Editar
+                    </a>
+
+                    <form action="{{ route('ventas.destroy', $venta->id) }}"
+                          method="POST"
+                          style="margin:0;">
 
                         @csrf
                         @method('DELETE')
 
-                        <button type="submit">Borrar</button>
+                        <button type="submit"
+                                onclick="return confirm('¿Seguro que deseas borrar esta venta?')"
+                                style="
+                                background:#dc2626;
+                                color:white;
+                                border:none;
+                                padding:8px 12px;
+                                border-radius:7px;
+                                cursor:pointer;
+                                font-size:13px;
+                            ">
+                            Borrar
+                        </button>
 
                     </form>
 
-                </td>
+                    <a href="{{ route('ventas.xml', $venta->id) }}"
+                       style="
+                        background:#7c3aed;
+                        color:white;
+                        padding:8px 12px;
+                        border-radius:7px;
+                        text-decoration:none;
+                        font-size:13px;
+                   ">
+                        XML
+                    </a>
 
-            </tr>
+                    <a href="{{ route('ventas.descargarXML', $venta->id) }}"
+                       style="
+                        background:#059669;
+                        color:white;
+                        padding:8px 12px;
+                        border-radius:7px;
+                        text-decoration:none;
+                        font-size:13px;
+                   ">
+                        Descargar
+                    </a>
 
-        @endforeach
-        <a href="{{ url('ventas/'.$v->id.'/xml') }}">XML</a>
-    </table>
+                </div>
+
+            </div>
+
+            {{-- LÍNEAS --}}
+            <div style="padding:20px;">
+
+                <table width="100%" style="margin:0; min-width:1000px;">
+
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Especie</th>
+                        <th>Frescura</th>
+                        <th>Calibre</th>
+                        <th>Lote</th>
+                        <th>Cantidad</th>
+                        <th>Vendedor</th>
+                        <th>Comprador</th>
+                    </tr>
+
+                    @forelse($venta->lineas as $linea)
+
+                        <tr>
+                            <td>{{ $linea->fecha_venta ?? $venta->fecha }}</td>
+                            <td>{{ $linea->especie->especie_comercial ?? '' }}</td>
+                            <td>{{ $linea->frescura ?: '-' }}</td>
+                            <td>{{ $linea->calibre ?: '-' }}</td>
+                            <td>{{ $linea->lote }}</td>
+                            <td>{{ $linea->cantidad }}</td>
+                            <td>{{ $linea->vendedor->nombre ?? '' }}</td>
+                            <td>{{ $linea->comprador->nombre ?? '' }}</td>
+                        </tr>
+
+                    @empty
+
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding:20px;">
+                                Sin líneas de venta.
+                            </td>
+                        </tr>
+
+                    @endforelse
+
+                </table>
+
+            </div>
+
+        </div>
+
+    @empty
+
+        <div style="
+        background:white;
+        padding:30px;
+        border-radius:14px;
+        text-align:center;
+        box-shadow:0 8px 25px rgba(0,0,0,0.05);
+    ">
+            No hay ventas registradas.
+        </div>
+
+    @endforelse
 
 @endsection

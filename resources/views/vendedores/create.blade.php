@@ -2,36 +2,99 @@
 
 @section('content')
 
-    <h2>Nuevo vendedor</h2>
+    <h2 style="margin-bottom:25px;">Nuevo Vendedor</h2>
 
-    <form method="POST" action="{{ route('vendedores.store') }}">
+    <div style="max-width:600px;">
 
-        @csrf
+        <form method="POST" action="{{ route('vendedores.store') }}">
 
-        <label>Nombre</label>
-        <br>
-        <input type="text" name="nombre">
-        <br><br>
+            @csrf
 
-        <label>Tipo documento</label>
-        <select name="tipo_documento">
-            <option value="1">NIF</option>
-            <option value="2">CIF</option>
-            <option value="3">NIE</option>
-        </select>
+            <div style="margin-bottom:18px;">
 
-        <label>NIF</label>
-        <br>
-        <input type="text" name="nif">
-        <br><br>
+                <label>Nombre</label>
 
-        <label>Dirección</label>
-        <br>
-        <input type="text" name="direccion">
-        <br><br>
+                <input
+                    type="text"
+                    name="nombre"
+                    value="{{ old('nombre') }}"
+                    required
+                    placeholder="Nombre del vendedor"
+                >
 
-        <button type="submit">Guardar</button>
+            </div>
 
-    </form>
+            <div style="margin-bottom:18px;">
+
+                <label>Tipo Documento</label>
+
+                <select name="tipo_documento" required>
+                    <option value="1" {{ old('tipo_documento') == 1 ? 'selected' : '' }}>CIF</option>
+                    <option value="2" {{ old('tipo_documento') == 2 ? 'selected' : '' }}>NIF</option>
+                    <option value="3" {{ old('tipo_documento') == 3 ? 'selected' : '' }}>NIE</option>
+                </select>
+
+            </div>
+
+            <div style="margin-bottom:18px;">
+
+                <label>Documento</label>
+
+                <input
+                    type="text"
+                    name="nif"
+                    value="{{ old('nif') }}"
+                    required
+                    placeholder="Número documento"
+                >
+
+            </div>
+
+            <div style="margin-bottom:18px;">
+
+                <label>Dirección</label>
+
+                <input
+                    type="text"
+                    name="direccion"
+                    value="{{ old('direccion') }}"
+                    required
+                    placeholder="Dirección completa"
+                >
+
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:25px;">
+
+                <button type="submit"
+                        style="
+                        background:#059669;
+                        color:white;
+                        border:none;
+                        padding:12px 18px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-weight:bold;
+                    ">
+                    Guardar
+                </button>
+
+                <a href="{{ route('vendedores.index') }}"
+                   style="
+                    background:#64748b;
+                    color:white;
+                    padding:12px 18px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-weight:bold;
+               ">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection

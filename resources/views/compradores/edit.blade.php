@@ -2,30 +2,64 @@
 
 @section('content')
 
-    <h2>Editar Comprador</h2>
+    <div style="
+max-width:700px;
+margin:auto;
+">
 
-    <form method="POST" action="{{ route('compradores.update',$compradores->id) }}">
+        <h1 style="
+    margin:0 0 25px 0;
+    ">
+            Editar Comprador
+        </h1>
 
-        @csrf
-        @method('PUT')
+        <form method="POST" action="{{ route('compradores.update',$compradores->id) }}">
 
-        <label>Nombre</label>
-        <br>
-        <input type="text" name="nombre" value="{{ $compradores->nombre }}">
-        <br><br>
+            @csrf
+            @method('PUT')
 
-        <label>NIF</label>
-        <br>
-        <input type="text" name="nif" value="{{ $compradores->nif }}">
-        <br><br>
+            <label>Nombre</label>
 
-        <label>Dirección</label>
-        <br>
-        <input type="text" name="direccion" value="{{ $compradores->direccion }}">
-        <br><br>
+            <input type="text"
+                   name="nombre"
+                   value="{{ old('nombre', $compradores->nombre) }}"
+                   required>
 
-        <button type="submit">Actualizar</button>
+            <label>NIF</label>
 
-    </form>
+            <input type="text"
+                   name="nif"
+                   value="{{ old('nif', $compradores->nif) }}"
+                   required>
+
+            <label>Dirección</label>
+
+            <input type="text"
+                   name="direccion"
+                   value="{{ old('direccion', $compradores->direccion) }}"
+                   required>
+
+            <div style="
+        display:flex;
+        gap:10px;
+        flex-wrap:wrap;
+        margin-top:10px;
+        ">
+
+                <button type="submit" class="btn btn-success">
+                    Actualizar
+                </button>
+
+                <a href="{{ route('compradores.index') }}"
+                   class="btn"
+                   style="background:#64748b;">
+                    Volver
+                </a>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection
