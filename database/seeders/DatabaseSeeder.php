@@ -119,7 +119,7 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        // INSTALACIONES
+        // INSTALACIONES (12)
         DB::table('instalaciones')->insert([
             ['id'=>1,'nombre'=>'ISLETA','codigo_rega'=>'ES110070050003','establecimiento_venta'=>'12.021107/CA'],
             ['id'=>2,'nombre'=>'DELTA','codigo_rega'=>'ES110070050002','establecimiento_venta'=>'12.021107/CA'],
@@ -135,7 +135,7 @@ class DatabaseSeeder extends Seeder
             ['id'=>12,'nombre'=>'PIEDRA','codigo_rega'=>'ES210210050012','establecimiento_venta'=>'00.ACUI40/H'],
         ]);
 
-        // ESPECIES MAESTRAS
+        // ESPECIES MAESTRAS (12)
         DB::table('especies_maestras')->insert([
             ['id'=>1,'nombre_comercial'=>'DORADA','nombre_cientifico'=>'SPARUS AURATA','codigo_al3'=>'SBG'],
             ['id'=>2,'nombre_comercial'=>'ALBUR/MUGIL','nombre_cientifico'=>'MUGIL CEPHALUS','codigo_al3'=>'MUF'],
@@ -151,13 +151,22 @@ class DatabaseSeeder extends Seeder
             ['id'=>12,'nombre_comercial'=>'ANGUILA','nombre_cientifico'=>'ANGUILLA ANGUILLA','codigo_al3'=>'ELE'],
         ]);
 
-        // ESPECIES
+        // ESPECIES (14)
         DB::table('especies')->insert([
             ['id'=>1,'codigo'=>'01','especie_comercial'=>'DORADA','especie_cientifica'=>'SPARUS AURATA','especie_al3'=>'SBG','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
             ['id'=>2,'codigo'=>'02','especie_comercial'=>'ALBUR/MUGIL','especie_cientifica'=>'MUGIL CEPHALUS','especie_al3'=>'MUF','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
             ['id'=>3,'codigo'=>'03','especie_comercial'=>'LUBINA','especie_cientifica'=>'DICENTRARCHUS LABRAX','especie_al3'=>'BSS','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
             ['id'=>4,'codigo'=>'04','especie_comercial'=>'LENGUADO','especie_cientifica'=>'SOLEA SENEGALENSIS','especie_al3'=>'OAL','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
             ['id'=>5,'codigo'=>'05','especie_comercial'=>'CAMARON','especie_cientifica'=>'PALAEMON VARIANS','especie_al3'=>'PVR','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>6,'codigo'=>'06','especie_comercial'=>'SARGO','especie_cientifica'=>'DIPLODUS SARGUS','especie_al3'=>'SWA','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>7,'codigo'=>'07','especie_comercial'=>'BAILA','especie_cientifica'=>'DICENTRARCHUS PUNTACTUS','especie_al3'=>'SPU','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>8,'codigo'=>'08','especie_comercial'=>'CORVINA','especie_cientifica'=>'ARGYROSOMUS REGIUS','especie_al3'=>'MGR','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>9,'codigo'=>'09','especie_comercial'=>'MERO','especie_cientifica'=>'EPINEPHELUS MARGINATUS','especie_al3'=>'GPD','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>10,'codigo'=>'10','especie_comercial'=>'LANGOSTINO','especie_cientifica'=>'PENAEUS JAPONICUS','especie_al3'=>'KUP','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>11,'codigo'=>'11','especie_comercial'=>'DORADA','especie_cientifica'=>'SPARUS AURATA','especie_al3'=>'SBG','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'GUT'],
+            ['id'=>12,'codigo'=>'12','especie_comercial'=>'PARGO','especie_cientifica'=>'DENTEX AURATA','especie_al3'=>'DEP','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>13,'codigo'=>'13','especie_comercial'=>'ANGUILA','especie_cientifica'=>'ANGUILLA ANGUILLA','especie_al3'=>'ELE','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>14,'codigo'=>'31','especie_comercial'=>'LUBINA','especie_cientifica'=>'DICENTRARCHUS LABRAX','especie_al3'=>'BSS','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'GUT'],
         ]);
     }
 }
