@@ -125,6 +125,39 @@ class DatabaseSeeder extends Seeder
             ['id'=>2,'nombre'=>'DELTA','codigo_rega'=>'ES110070050002','establecimiento_venta'=>'12.021107/CA'],
             ['id'=>3,'nombre'=>'DELTA NORTE','codigo_rega'=>'ES110070050007','establecimiento_venta'=>'12.021107/CA'],
             ['id'=>4,'nombre'=>'M.CASETA','codigo_rega'=>'ES110070050005','establecimiento_venta'=>'12.021107/CA'],
+            ['id'=>5,'nombre'=>'ALBINAS','codigo_rega'=>'ES110070050004','establecimiento_venta'=>'12.021107/CA'],
+            ['id'=>6,'nombre'=>'SAN JAIME','codigo_rega'=>'ES110280000308','establecimiento_venta'=>'12.021107/CA'],
+            ['id'=>7,'nombre'=>'SAN FEDERICO','codigo_rega'=>'ES110150050002','establecimiento_venta'=>'12.021107/CA'],
+            ['id'=>8,'nombre'=>'SANCTI PETRI','codigo_rega'=>'ES110150000601','establecimiento_venta'=>'12.021107/CA'],
+            ['id'=>9,'nombre'=>'LDH','codigo_rega'=>'ES210210050009','establecimiento_venta'=>'12.021107/CA'],
+            ['id'=>10,'nombre'=>'SAN MIGUEL','codigo_rega'=>'ES210210050011','establecimiento_venta'=>'12.021107/CA'],
+            ['id'=>11,'nombre'=>'CANELA','codigo_rega'=>'ES210100055011','establecimiento_venta'=>'00.ACUI64/H'],
+            ['id'=>12,'nombre'=>'PIEDRA','codigo_rega'=>'ES210210050012','establecimiento_venta'=>'00.ACUI40/H'],
+        ]);
+
+        // ESPECIES MAESTRAS
+        DB::table('especies_maestras')->insert([
+            ['id'=>1,'nombre_comercial'=>'DORADA','nombre_cientifico'=>'SPARUS AURATA','codigo_al3'=>'SBG'],
+            ['id'=>2,'nombre_comercial'=>'ALBUR/MUGIL','nombre_cientifico'=>'MUGIL CEPHALUS','codigo_al3'=>'MUF'],
+            ['id'=>3,'nombre_comercial'=>'LUBINA','nombre_cientifico'=>'DICENTRARCHUS LABRAX','codigo_al3'=>'BSS'],
+            ['id'=>4,'nombre_comercial'=>'LENGUADO','nombre_cientifico'=>'SOLEA SENEGALENSIS','codigo_al3'=>'OAL'],
+            ['id'=>5,'nombre_comercial'=>'CAMARON','nombre_cientifico'=>'PALAEMON VARIANS','codigo_al3'=>'PVR'],
+            ['id'=>6,'nombre_comercial'=>'SARGO','nombre_cientifico'=>'DIPLODUS SARGUS','codigo_al3'=>'SWA'],
+            ['id'=>7,'nombre_comercial'=>'BAILA','nombre_cientifico'=>'DICENTRARCHUS PUNTACTUS','codigo_al3'=>'SPU'],
+            ['id'=>8,'nombre_comercial'=>'CORVINA','nombre_cientifico'=>'ARGYROSOMUS REGIUS','codigo_al3'=>'MGR'],
+            ['id'=>9,'nombre_comercial'=>'MERO','nombre_cientifico'=>'EPINEPHELUS MARGINATUS','codigo_al3'=>'GPD'],
+            ['id'=>10,'nombre_comercial'=>'LANGOSTINO','nombre_cientifico'=>'PENAEUS JAPONICUS','codigo_al3'=>'KUP'],
+            ['id'=>11,'nombre_comercial'=>'PARGO','nombre_cientifico'=>'DENTEX AURATA','codigo_al3'=>'DEP'],
+            ['id'=>12,'nombre_comercial'=>'ANGUILA','nombre_cientifico'=>'ANGUILLA ANGUILLA','codigo_al3'=>'ELE'],
+        ]);
+
+        // ESPECIES
+        DB::table('especies')->insert([
+            ['id'=>1,'codigo'=>'01','especie_comercial'=>'DORADA','especie_cientifica'=>'SPARUS AURATA','especie_al3'=>'SBG','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>2,'codigo'=>'02','especie_comercial'=>'ALBUR/MUGIL','especie_cientifica'=>'MUGIL CEPHALUS','especie_al3'=>'MUF','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>3,'codigo'=>'03','especie_comercial'=>'LUBINA','especie_cientifica'=>'DICENTRARCHUS LABRAX','especie_al3'=>'BSS','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>4,'codigo'=>'04','especie_comercial'=>'LENGUADO','especie_cientifica'=>'SOLEA SENEGALENSIS','especie_al3'=>'OAL','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
+            ['id'=>5,'codigo'=>'05','especie_comercial'=>'CAMARON','especie_cientifica'=>'PALAEMON VARIANS','especie_al3'=>'PVR','pais_al3'=>'ESP','metodo_produccion'=>'2','cod_conservacion'=>'FRE','cod_presentacion'=>'WHL'],
         ]);
     }
 }
