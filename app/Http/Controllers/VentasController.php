@@ -6,13 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Venta;
 use App\Models\VentaLinea;
 use Illuminate\Support\Facades\DB;
-use ZipArchive;
 
 class VentasController extends Controller
 {
     public function index()
     {
-        $ventas = Venta::with('lineas.especie','lineas.vendedor','lineas.comprador')->latest()->get();
+        $ventas = Venta::with('lineas.especie', 'lineas.vendedor', 'lineas.comprador')->latest()->get();
         return view('ventas.index', compact('ventas'));
     }
 
@@ -66,6 +65,14 @@ class VentasController extends Controller
                 continue;
             }
 
+            $especie = \App\Models\Especie::find($linea['especie_id']);
+            $nombre = strtoupper($especie->especie_comercial);
+
+            $requiere =
+                str_contains($nombre, 'ALBUR') ||
+                str_contains($nombre, 'MUGIL') ||
+                str_contains($nombre, 'LENGUADO');
+
             VentaLinea::create([
                 'venta_id' => $venta->id,
                 'instalacion_id' => $linea['instalacion_id'],
@@ -74,8 +81,8 @@ class VentasController extends Controller
                 'cantidad' => $linea['cantidad'],
                 'vendedor_id' => $linea['vendedor_id'],
                 'comprador_id' => $linea['comprador_id'],
-                'calibre' => $linea['calibre'] ?? null,
-                'frescura' => $linea['frescura'] ?? null,
+                'calibre' => $requiere ? ($linea['calibre'] ?? null) : null,
+                'frescura' => $requiere ? ($linea['frescura'] ?? null) : null,
             ]);
         }
 
@@ -110,6 +117,14 @@ class VentasController extends Controller
                 continue;
             }
 
+            $especie = \App\Models\Especie::find($linea['especie_id']);
+            $nombre = strtoupper($especie->especie_comercial);
+
+            $requiere =
+                str_contains($nombre, 'ALBUR') ||
+                str_contains($nombre, 'MUGIL') ||
+                str_contains($nombre, 'LENGUADO');
+
             VentaLinea::create([
                 'venta_id' => $venta->id,
                 'instalacion_id' => $linea['instalacion_id'],
@@ -118,8 +133,8 @@ class VentasController extends Controller
                 'cantidad' => $linea['cantidad'],
                 'vendedor_id' => $linea['vendedor_id'],
                 'comprador_id' => $linea['comprador_id'],
-                'calibre' => $linea['calibre'] ?? null,
-                'frescura' => $linea['frescura'] ?? null,
+                'calibre' => $requiere ? ($linea['calibre'] ?? null) : null,
+                'frescura' => $requiere ? ($linea['frescura'] ?? null) : null,
             ]);
         }
 
@@ -156,15 +171,17 @@ class VentasController extends Controller
             mkdir($rutaCarpeta, 0777, true);
         }
 
+        foreach (glob($rutaCarpeta . '/*.xml') as $f) {
+            unlink($f);
+        }
+
         $grupos = $venta->lineas->groupBy(function ($l) {
             return $l->instalacion->establecimiento_venta;
         });
 
-        $archivos = [];
+        foreach ($grupos as $establecimiento => $lineasEstablecimiento) {
 
-        foreach ($grupos as $establecimiento => $lineas) {
-
-            $nombreFichero = $this->generarNombreFichero($establecimiento);
+            $nombreFichero = $this->generarNombreFichero($establecimiento, $venta->fecha);
 
             $xml = new \SimpleXMLElement('<Envio/>');
             $xml->addAttribute('NumEnvio', $nombreFichero);
@@ -174,74 +191,105 @@ class VentasController extends Controller
             $estab->addAttribute('NumIdentificacionEstablec', $establecimiento);
 
             $ventas = $estab->addChild('Ventas');
-            $unidad = $ventas->addChild('VentasUnidadProductiva');
 
-            $datos = $unidad->addChild('DatosUnidadProductiva');
-            $granja = $datos->addChild('Granja');
-
-            $granja->addChild('MetodoProduccion', '2');
-            $granja->addChild('CodigoREGA', $lineas->first()->instalacion->codigo_rega);
-            $granja->addChild('FechaProduccion', now()->format('Y-m-d\TH:i:s'));
-
-            $especiesNode = $unidad->addChild('Especies');
+            $gruposRega = $lineasEstablecimiento->groupBy(function ($l) {
+                return $l->instalacion->codigo_rega;
+            });
 
             $contador = 1;
 
-            foreach ($lineas as $l) {
+            foreach ($gruposRega as $rega => $lineasRega) {
 
-                $numDocVenta = $this->generarNumDocVenta($establecimiento, $contador);
+                $unidad = $ventas->addChild('VentasUnidadProductiva');
 
-                $esp = $especiesNode->addChild('Especie');
-                $esp->addAttribute('NumDocVenta', $numDocVenta);
+                $datos = $unidad->addChild('DatosUnidadProductiva');
+                $granja = $datos->addChild('Granja');
 
-                $esp->addChild('EspecieAL3', $l->especie->especie_al3);
-                $esp->addChild('EspecieComercial', $l->especie->especie_comercial);
-                $esp->addChild('EspecieCientifico', $l->especie->especie_cientifica);
-                $esp->addChild('PaisAL3', $l->especie->pais_al3 ?? 'ESP');
-                $esp->addChild('CodEspecieConservacion', $l->especie->cod_conservacion ?? 'FRE');
-                $esp->addChild('CodEspeciePresentacion', $l->especie->cod_presentacion ?? 'WHL');
-                $esp->addChild('FechaVenta', $venta->fecha . 'T00:00:00');
-                $esp->addChild('Lote', $l->lote);
+                $granja->addChild('MetodoProduccion', '2');
+                $granja->addChild('CodigoREGA', $rega);
+                $granja->addChild('FechaProduccion', $venta->fecha . 'T00:00:00');
 
-                $esp->addChild('TipoCifNifVendedor', (int)$l->vendedor->tipo_documento);
-                $esp->addChild('NIFVendedor', $l->vendedor->nif);
-                $esp->addChild('NombreVendedor', $l->vendedor->nombre);
-                $esp->addChild('DireccionVendedor', $l->vendedor->direccion);
+                $especiesNode = $unidad->addChild('Especies');
 
-                $esp->addChild('NIFComprador', $l->comprador->nif);
-                $esp->addChild('NombreComprador', $l->comprador->nombre);
-                $esp->addChild('DireccionComprador', $l->comprador->direccion);
+                foreach ($lineasRega as $l) {
 
-                $esp->addChild('Cantidad', $l->cantidad);
+                    $numDocVenta = $this->generarNumDocVenta($establecimiento, $contador);
 
-                $contador++;
+                    $esp = $especiesNode->addChild('Especie');
+                    $esp->addAttribute('NumDocVenta', $numDocVenta);
+
+                    $esp->addChild('EspecieAL3', $l->especie->especie_al3);
+                    $esp->addChild('EspecieComercial', $l->especie->especie_comercial);
+                    $esp->addChild('EspecieCientifico', $l->especie->especie_cientifica);
+
+                    $nombre = strtoupper($l->especie->especie_comercial);
+
+                    $requiere =
+                        str_contains($nombre, 'ALBUR') ||
+                        str_contains($nombre, 'MUGIL') ||
+                        str_contains($nombre, 'LENGUADO');
+
+                    if ($requiere) {
+                        if (!empty($l->frescura)) {
+                            $esp->addChild('CodEspecieFrescura', $l->frescura);
+                        }
+
+                        if (!empty($l->calibre)) {
+                            $esp->addChild('CodEspecieCalibre', $l->calibre);
+                        }
+                    }
+
+                    $esp->addChild('PaisAL3', $l->especie->pais_al3 ?? 'ESP');
+                    $esp->addChild('CodEspecieConservacion', $l->especie->cod_conservacion ?? 'FRE');
+                    $esp->addChild('CodEspeciePresentacion', $l->especie->cod_presentacion ?? 'WHL');
+                    $esp->addChild('FechaVenta', $venta->fecha . 'T00:00:00');
+                    $esp->addChild('Lote', $l->lote);
+
+                    $esp->addChild('TipoCifNifVendedor', (int)$l->vendedor->tipo_documento);
+                    $esp->addChild('NIFVendedor', $l->vendedor->nif);
+                    $esp->addChild('NombreVendedor', $l->vendedor->nombre);
+                    $esp->addChild('DireccionVendedor', $l->vendedor->direccion);
+
+                    $esp->addChild('NIFComprador', $l->comprador->nif);
+                    $esp->addChild('NombreComprador', $l->comprador->nombre);
+                    $esp->addChild('DireccionComprador', $l->comprador->direccion);
+
+                    $esp->addChild('Cantidad', $l->cantidad);
+
+                    $contador++;
+                }
             }
 
             $rutaXml = $rutaCarpeta . '/' . $nombreFichero . '.xml';
             $xml->asXML($rutaXml);
-
-            $archivos[] = $rutaXml;
         }
 
-        $zipPath = $rutaCarpeta . '/venta_' . $ventaId . '.zip';
+        $fechaZip = date('Ymd', strtotime($venta->fecha));
+        $zip = $rutaCarpeta . '/venta' . $venta->id . '_' . $fechaZip . '.zip';
 
-        $zip = new ZipArchive();
-        $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-
-        foreach ($archivos as $archivo) {
-            $zip->addFile($archivo, basename($archivo));
+        if (file_exists($zip)) {
+            unlink($zip);
         }
 
-        $zip->close();
+        $zipFile = new \ZipArchive();
 
-        return $zipPath;
+        if ($zipFile->open($zip, \ZipArchive::CREATE) === true) {
+
+            foreach (glob($rutaCarpeta . '/*.xml') as $archivo) {
+                $zipFile->addFile($archivo, basename($archivo));
+            }
+
+            $zipFile->close();
+        }
+
+        return $zip;
     }
 
-    private function generarNombreFichero($establecimiento)
+    private function generarNombreFichero($establecimiento, $fechaVenta)
     {
         $ccaa = '01';
         $registro = $this->extraerRegistro($establecimiento);
-        $fecha = now()->format('Ymd');
+        $fecha = date('Ymd', strtotime($fechaVenta));
         $hora = now()->format('His');
 
         return "NV_{$ccaa}_{$registro}_{$fecha}_{$hora}";
@@ -268,5 +316,21 @@ class VentasController extends Controller
         }
 
         return '000000';
+    }
+
+    public function descargarXML($ventaId)
+    {
+        return $this->generarXML($ventaId);
+    }
+
+    public function descargarArchivo($nombre)
+    {
+        $path = storage_path('app/xml/' . $nombre);
+
+        if (!file_exists($path)) {
+            abort(404);
+        }
+
+        return response()->download($path);
     }
 }
