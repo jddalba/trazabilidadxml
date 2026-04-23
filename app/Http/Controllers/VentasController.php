@@ -292,7 +292,7 @@ class VentasController extends Controller
         $fecha = date('Ymd', strtotime($fechaVenta));
         $hora = now()->format('His');
 
-        return "NV_{$ccaa}_{$registro}_{$fecha}_{$hora}";
+        return "DT_{$ccaa}_{$registro}_{$fecha}_{$hora}";
     }
 
     private function generarNumDocVenta($establecimiento, $contador)
@@ -302,7 +302,7 @@ class VentasController extends Controller
         $registro = $this->extraerRegistro($establecimiento);
         $contador = str_pad($contador, 7, '0', STR_PAD_LEFT);
 
-        return "NV{$ccaa}{$anio}{$registro}{$contador}";
+        return "DT{$ccaa}{$anio}{$registro}{$contador}";
     }
 
     private function extraerRegistro($establecimiento)
